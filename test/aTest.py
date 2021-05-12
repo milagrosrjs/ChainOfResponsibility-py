@@ -6,21 +6,20 @@ sys.path.append(ruta)
 from src.Chain_of_resp import *
 
 class aTest(unittest.TestCase):
-    def test_1(self):
-        a = Successor1()
-        b = Successor2()
+    def test_1_Monkey_Squirrel_not_equal(self):
+        a = MonkeyHandler()
+        b = SquirrelHandler()
+        self.assertNotEquals(a.handle,b.handle)
+
+    def test_2(self):
+        a = MonkeyHandler()
+        b = MonkeyHandler()
         self.assertNotEquals(a,b)
     
-    def test_2(self):
-        a = Successor1()
-        b = Successor1()
-        self.assertEquals(a.handle(1), b.handle(1))
-
     def test_3(self):
-        a = Successor1()
-        b = Successor2()
-        self.assertNotEquals(a.handle(1), b.handle(1))
-    
+       a = MonkeyHandler()
+       b = DogHandler()
+       self.assertFalse(a == b)
 
 
 if __name__ == '_main_': unittest.main()
