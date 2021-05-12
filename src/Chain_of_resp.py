@@ -5,31 +5,28 @@ from typing import Any, Optional
 
 class Handler(ABC):
     """
-    The Handler interface declares a method for building the chain of handlers.
-    It also declares a method for executing a request.
+    La interfaz Handler declara un método para construir la cadena de controladores.
+    También declara un método para ejecutar una solicitud.
     """
 
     @abstractmethod
-    def set_next(self, handler: Handler) -> Handler:
+    def set_next(self, handler: Handler) -> Handler: #setea el handler siguiente
         pass
 
     @abstractmethod
-    def handle(self, request) -> Optional[str]:
+    def handle(self, request) -> Optional[str]: #le define una solicitud al handle
         pass
 
 
 class AbstractHandler(Handler):
-    """
-    The default chaining behavior can be implemented inside a base handler
-    class.
-    """
+    
 
     _next_handler: Handler = None
 
     def set_next(self, handler: Handler) -> Handler:
         self._next_handler = handler
-        # Returning a handler from here will let us link handlers in a
-        # convenient way like this:
+        # Devolver un controlador desde aquí nos permitirá vincular los controladores en una
+        # forma conveniente como esta:
         # monkey.set_next(squirrel).set_next(dog)
         return handler
 
@@ -42,12 +39,12 @@ class AbstractHandler(Handler):
 
 
 """
-All Concrete Handlers either handle a request or pass it to the next handler in
-the chain.
+Todos los Handlers manejan una solicitud o la pasan al siguiente Handler en
+la cadena.
 """
 
 
-class MonkeyHandler(AbstractHandler):
+class MonkeyHandler(AbstractHandler): #handler que responde a la solicitud "Banana"
     def handle(self, request: Any) -> str:
         if request == "Banana":
             return f"Monkey: I'll eat the {request}"
@@ -55,7 +52,7 @@ class MonkeyHandler(AbstractHandler):
             return super().handle(request)
 
 
-class SquirrelHandler(AbstractHandler):
+class SquirrelHandler(AbstractHandler): #handler que responde a la solicitud "Nut"
     def handle(self, request: Any) -> str:
         if request == "Nut":
             return f"Squirrel: I'll eat the {request}"
@@ -63,7 +60,7 @@ class SquirrelHandler(AbstractHandler):
             return super().handle(request)
 
 
-class DogHandler(AbstractHandler):
+class DogHandler(AbstractHandler): #handler que responde a la solicitud "MeatBall"
     def handle(self, request: Any) -> str:
         if request == "MeatBall":
             return f"Dog: I'll eat the {request}"
@@ -71,19 +68,18 @@ class DogHandler(AbstractHandler):
             return super().handle(request)
 
 
-def client_code(handler: Handler) -> None:
+def client_code(handler: Handler) -> None: #función que solo recibe un handler en específico
     """
-    The client code is usually suited to work with a single handler. In most
-    cases, it is not even aware that the handler is part of a chain.
+     El código de cliente trabaja con un solo controlador.
     """
 
-    for food in ["Nut", "Banana", "Cup of coffee"]:
+    for food in ["Nut", "Banana", "MeatBall"]: #for para general enviar solicitudes a Handlers
         print(f"\nClient: Who wants a {food}?")
         result = handler.handle(food)
         if result:
-            print(f"  {result}", end="")
+            print(f"  {result}", end="") #si el handler actual puede responder a esa solicitud dice que comió food 
         else:
-            print(f"  {food} was left untouched.", end="")
+            print(f"  {food} was left untouched.", end="") #si no puede responder a la solicitud dice que no tocó food
 
 
 if __name__ == "__main__":
@@ -91,15 +87,18 @@ if __name__ == "__main__":
     squirrel = SquirrelHandler()
     dog = DogHandler()
 
-    monkey.set_next(squirrel).set_next(dog)
+    monkey.set_next(squirrel).set_next(dog) #setea el orden de la cadena
 
-    # The client should be able to send a request to any handler, not just the
-    # first one in the chain.
+    # El cliente debe poder enviar una solicitud a cualquier controlador, no solo al
+    # primero en la cadena.
     print("Chain: Monkey > Squirrel > Dog")
-    client_code(monkey)
+    client_code(monkey) #empieza por mono
     print("\n")
 
     print("Subchain: Squirrel > Dog")
-    client_code(squirrel)
+    client_code(squirrel) #empieza por squirrel
+    print("\n")
 
+    print("Subsubchain: Squirrel")
+    client_code(dog) #empieza por perro
 
