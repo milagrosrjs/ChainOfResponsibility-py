@@ -3,7 +3,7 @@ import sys
 import os
 ruta = os.path.abspath(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(ruta)
-from src.main import *
+from src.Chain_of_resp import *
 
 class aTest(unittest.TestCase):
     def test_1(self):
